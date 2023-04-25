@@ -1,0 +1,134 @@
+# LIVECell Semantic Segmentation
+This repository contains course project deliverables of a project revolving around using MONAI and SimpleITK to perform semantic segmentation on the LIVECell dataset.
+
+The overview of the project is as follows:
+1. Preprocess LIVECell Dataset to make it suitable for semantic segmentation.
+2. Establish a baseline using SimpleITK adaptive thresholding algorithms
+3. Use Monai to train variations of UNET, VNET, and SwinUNETR
+4. Evaluate performance using DICE and IoU metrics as well as explore performance on measuring Cell Confluence.
+
+
+## Table of contents
+1. [Environment_Setup](#Environment_Setup)
+2. [Dataset](#Dataset)
+3. [Preprocessing](#Preprocessing)
+4. [Baseline]()
+5. [Deep_Learning](#Deep_Learning)
+	1. [Training]() 
+	2. [Testing]()
+	3. [Inference]()
+6. [Results]()
+
+## 1. Environment_Setup
+The environment used is described in detail in the [environment.yml]() file. The project was run on a Windows11 machine with and an RTX3080 GPU with appropriate NVIDIA drivers installed.
+
+Using conda you can create an environment as follows:
+
+    conda env create -n livecellseg -f environment.yml
+
+Then activate it as follows:
+
+    conda activate livecellseg
+
+## 2. Dataset
+**Skip if you want to use already downloaded tiny subset**
+
+The dataset used is [LIVECell](https://github.com/sartorius-research/LIVECell). It has many formats and subexperiments. What we require are 4 files to be downloaded:
+1. [Images](http://livecell-dataset.s3.eu-central-1.amazonaws.com/LIVECell_dataset_2021/images.zip)
+2. [Training Annotation Set](http://livecell-dataset.s3.eu-central-1.amazonaws.com/LIVECell_dataset_2021/annotations/LIVECell/livecell_coco_train.json)
+3. [Validation Annotation Set](http://livecell-dataset.s3.eu-central-1.amazonaws.com/LIVECell_dataset_2021/annotations/LIVECell/livecell_coco_val.json)
+4. [Test Annotation Set](http://livecell-dataset.s3.eu-central-1.amazonaws.com/LIVECell_dataset_2021/annotations/LIVECell/livecell_coco_test.json)
+
+*Visit the original LIVECell repository for updated links if the links above do not work.*
+
+The code assumes by default that the dataset is downloaded with the following structure.
+
+    <repository>/dataset
+    .../images
+    .../livecell_coco_train.json
+    .../livecell_coco_val.json
+    .../livecell_coco_test.json
+
+You might notice that the repository already contains the above structure, for convenience a tiny subset has been uploaded for testing the code. If you want to use the whole dataset please replace the contents of the dataset folder with the full versions that you have downloaded from the above links.
+
+## 3. Preprocessing
+We perform 2 preprocessing steps on the Livecell dataset.
+
+### 3.1. Fix duplicate entries and mutual exclusiveness
+If you have the dataset files in the default locations, you can just run:
+
+    python fix_duplicates.py
+
+Which will detect and remove the duplicate and non mutual exclusive entries in the .json annotation files. This fix will overwrite the .json files.
+A message should be printed indicating the success of the operation and counts of all detections.
+
+### 3.2. Instance Segmentation Labels to Semantic Segmentation Labels
+Now we need to convert LIVECell instance segmantation labels to semantic segmentation masks for all sets run the following commands
+
+    python instance2semantic.py
+
+You should see `./dataset/livecell_train_val_masks` and `./dataset/livecell_test_masks` folders generated with black and white images inside with white representing cells and with black for the background.
+
+## 4. Baseline
+Produce baseline plots
+
+## 5. Deep_Learning
+### 5.1 Training
+This section shows you how to train any of the model architectures.
+
+Wandb was utilized to keep track of training and produce the final plots. You are encouraged to setup a wandb account and log into it to keep track of your training as well.
+
+
+### 5.2 Testing
+This section shows you how to evaluate the trained model on the testing subset on DICE, IoU and cell confluence RMSE.
+
+### 5.3 Inference
+This section shows you how to use the trained model to produce segmentation masks.
+
+## 6. Results
+
+### 6.1 Baseline:
+
+![](figures/baseline_dice.png)
+
+### 6.2 Optimizers and Learning rates Ablation:
+SCH refers to using a cosine annealing learning rate scheduler.
+
+![](figures/opt_lr_dice.png)
+
+### 6.3 Unet Layers Ablation:
+![](figures/unets_dice.png)
+
+### 6.4 Arch Comparison:
+![](figures/archs_dice.png)
+
+### 6.5 Best Unet Model:
+Best UNET model had the following architecture
+
+    # UNet 6L-3R (36.9 MB)
+    model = UNet(
+        spatial_dims=2,
+        in_channels=1,
+        out_channels=1,
+        channels=(16, 32, 64, 128, 256, 512),
+        strides=(2, 2, 2, 2, 2),
+        num_res_units=3,
+        norm=Norm.BATCH,
+    )
+    optimizer = Adam(model.parameters(), lr=1e-4)
+    learning_rate_scheduler = None
+
+![](figures/best_unet_dice.png)
+
+### 6.6 Cell Confluence Results:
+
+|     Architecture    |              |     Confluence RMSE    |             |
+|:-------------------:|:------------:|:----------------------:|:-----------:|
+|                     |     Train    |        Validation      |     Test    |
+|      Unet-6L-3R     |      7.6%    |            7%          |      6%     |
+|      Unet-6L-0R     |       …      |            …           |       …     |
+|      Unet-4L-0R     |      7.9%    |           7.2%         |     6.2%    |
+|      Unet-2L-0R     |      9.2%    |           8.2%         |     9.3%    |
+
+## References
+[1] Edlund, C., Jackson, T.R., Khalid, N. et al. LIVECell—A large-scale dataset for label-free live cell segmentation. Nat Methods 18, 1038–1045 (2021). https://doi.org/10.1038/s41592-021-01249-6
