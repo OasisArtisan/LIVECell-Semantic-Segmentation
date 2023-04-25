@@ -1,0 +1,20 @@
+channels:
+    - pytorch
+    - nvidia
+    - conda-forge
+    - default
+dependencies:
+    - pytorch
+    - pytorch-cuda=11.8
+    - numpy
+    - matplotlib
+    - opencv # Needed to convert instance segmentation labels to semantic
+    - tqdm # useful to track progress
+    - wandb # Optional (useful to track progress)
+    - pip
+    - pip:
+        - Pillow
+        - monai
+        - SimpleITK
+        - seaborn # To display cell confluence distribution
+        - pycocotools # Needed to parse LiveCell annotation format
