@@ -12,9 +12,15 @@ dependencies:
     - tqdm # useful to track progress
     - wandb # Optional (useful to track progress)
     - pip
+    - jupyter
     - pip:
         - Pillow
         - monai
         - SimpleITK
         - seaborn # To display cell confluence distribution
         - pycocotools # Needed to parse LiveCell annotation format
+        - tifffile # Needed to read tiff files
+        - imagecodecs 
+        - nibabel
+        - itk # Needed to read tiff files in Monai
+        - einops # Needed for some transformations in Monai
