@@ -129,3 +129,4 @@ Best UNET model had the following architecture
 
 ## References
 [1] Edlund, C., Jackson, T.R., Khalid, N. et al. LIVECell—A large-scale dataset for label-free live cell segmentation. Nat Methods 18, 1038–1045 (2021). https://doi.org/10.1038/s41592-021-01249-6
+[2] https://arxiv.org/abs/2211.02701
