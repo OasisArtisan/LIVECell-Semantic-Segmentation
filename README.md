@@ -49,41 +49,38 @@ The code assumes by default that the dataset is downloaded with the following st
     .../livecell_coco_val.json
     .../livecell_coco_test.json
 
-You might notice that the repository already contains the above structure, for convenience a tiny subset has been uploaded for testing the code. If you want to use the whole dataset please replace the contents of the dataset folder with the full versions that you have downloaded from the above links.
+You might notice that the repository already contains the above structure, for convenience, 1% of LIVECell was randomly sampled and has been uploaded for testing the code. If you want to use the whole dataset please replace the contents of the dataset folder with the full versions that you have downloaded from the above links.
 
 ## 3. Preprocessing
-We perform 2 preprocessing steps on the Livecell dataset.
 
-### 3.1. Fix duplicate entries and mutual exclusiveness
-If you have the dataset files in the default locations, you can just run:
-
-    python fix_duplicates.py
-
-Which will detect and remove the duplicate and non mutual exclusive entries in the .json annotation files. This fix will overwrite the .json files.
-A message should be printed indicating the success of the operation and counts of all detections.
-
-### 3.2. Instance Segmentation Labels to Semantic Segmentation Labels
-Now we need to convert LIVECell instance segmantation labels to semantic segmentation masks for all sets run the following commands
+### 3.1. Instance Segmentation Labels to Semantic Segmentation Labels
+We must convert LIVECell instance segmantation labels to semantic segmentation masks for all sets run the following commands
 
     python instance2semantic.py
 
 You should see `./dataset/livecell_train_val_masks` and `./dataset/livecell_test_masks` folders generated with black and white images inside with white representing cells and with black for the background.
 
+### 3.2. (Optional) Fix duplicate images and mutual exclusiveness
+To ensure more accurate results refer to my [GitHub issue](https://github.com/sartorius-research/LIVECell/issues/26) for a list of duplicate images as well as images common between training and validation. It is recommended that you remove those images before proceeding with training.
+
+### 3.3. (Optional) Remove corrupt annotations
+Once you have the semantic segmentation masks it is easy to skim through the directory and observe outlier masks (Masks only having one cell) and removing them and their corresponding image and annotation.
+
 ## 4. Baseline
-Produce baseline plots
+For the baseline I tested 4 adaptive thresholding algorithms with and without binary morphology using simpleitk.
+
+If you have done the previous steps you can simply run the notebook `baseline.ipynb` to obtain results for the baseline. It contains comments and sections to guide you.
+If you have not changed the location of the dataset, the notebook should run from start to finish without errors.
 
 ## 5. Deep_Learning
-### 5.1 Training
-This section shows you how to train any of the model architectures.
 
-Wandb was utilized to keep track of training and produce the final plots. You are encouraged to setup a wandb account and log into it to keep track of your training as well.
+For the deep learning models, I have tested different configurations of UNET, VNET, and SwinUNETR. The best trained model (SwinUNETR) is uploaded in `models/`. 
 
+All steps to reproduce a trained model like the one uploaded is available in the notebook `deep_learning.ipynb`. It is set to run for 1 epoch by default just so that you are able to run it to completion on the subset quickly for testing.
 
-### 5.2 Testing
-This section shows you how to evaluate the trained model on the testing subset on DICE, IoU and cell confluence RMSE.
+The notebook also contains testing and inference code as well as dataset exploration and visualizations.
 
-### 5.3 Inference
-This section shows you how to use the trained model to produce segmentation masks.
+Again, if you have not changed the location of the dataset, the notebook should run from start to finish without errors.
 
 ## 6. Results
 
