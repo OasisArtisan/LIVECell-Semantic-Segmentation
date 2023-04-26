@@ -49,7 +49,7 @@ The code assumes by default that the dataset is downloaded with the following st
     .../livecell_coco_val.json
     .../livecell_coco_test.json
 
-You might notice that the repository already contains the above structure, for convenience, 1% of LIVECell was randomly sampled and has been uploaded for testing the code. If you want to use the whole dataset please replace the contents of the dataset folder with the full versions that you have downloaded from the above links.
+You might notice that the repository already contains the above structure, for convenience, 1% of LIVECell was randomly sampled using `sample_subset.py` and has been uploaded for testing the code. If you want to use the whole dataset please replace the contents of the dataset folder with the full versions that you have downloaded from the above links.
 
 ## 3. Preprocessing
 
