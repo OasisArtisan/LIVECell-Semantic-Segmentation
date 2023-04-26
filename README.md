@@ -9,15 +9,12 @@ The overview of the project is as follows:
 
 
 ## Table of contents
-1. [Environment_Setup](#Environment_Setup)
-2. [Dataset](#Dataset)
-3. [Preprocessing](#Preprocessing)
-4. [Baseline]()
-5. [Deep_Learning](#Deep_Learning)
-	1. [Training]() 
-	2. [Testing]()
-	3. [Inference]()
-6. [Results]()
+1. Environment_Setup
+2. Dataset
+3. Preprocessing
+4. Baseline
+5. Deep_Learning
+6. Results
 
 ## 1. Environment_Setup
 The environment used is described in detail in the [environment.yml]() file. The project was run on a Windows11 machine with and an RTX3080 GPU with appropriate NVIDIA drivers installed.
@@ -67,12 +64,15 @@ To ensure more accurate results refer to my [GitHub issue](https://github.com/sa
 Once you have the semantic segmentation masks it is easy to skim through the directory and observe outlier masks (Masks only having one cell) and removing them and their corresponding image and annotation.
 
 ## 4. Baseline
+![](figures/sample_baseline.png)
+
 For the baseline I tested 4 adaptive thresholding algorithms with and without binary morphology using simpleitk.
 
 If you have done the previous steps you can simply run the notebook `baseline.ipynb` to obtain results for the baseline. It contains comments and sections to guide you.
 If you have not changed the location of the dataset, the notebook should run from start to finish without errors.
 
 ## 5. Deep_Learning
+![](figures/sample_deep_learning.png)
 
 For the deep learning models, I have tested different configurations of UNET, VNET, and SwinUNETR. The best trained model (SwinUNETR) is uploaded in `models/`. 
 
